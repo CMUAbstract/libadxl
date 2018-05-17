@@ -81,6 +81,37 @@ uint8_t const ADXL_CONFIG_FILTER[] = {ADXL_CMD_WRITE_REG,ADXL_REG_FILTER_CTL,0x1
     sizeof(ADXL_CONFIG_RESET),\
     sizeof(ADXL_CONFIG_FILTER))
 
+
+void ACCEL_init()
+{
+    threeAxis_t_8 accelID = {0};
+
+    LOG("init: initializing accel\r\n");
+
+    /*
+    SPI_initialize();
+    ACCEL_initialize();
+    */
+    // ACCEL_SetReg(0x2D,0x02);
+
+    /* TODO: move the below stuff to accel.c */
+    BITSET(P4OUT, PIN_ACCEL_EN);
+
+    BITSET(P2SEL1, PIN_ACCEL_SCLK | PIN_ACCEL_MISO | PIN_ACCEL_MOSI);
+    BITCLR(P2SEL0, PIN_ACCEL_SCLK | PIN_ACCEL_MISO | PIN_ACCEL_MOSI);
+    __delay_cycles(1000);
+    SPI_initialize();
+    __delay_cycles(1000);
+    ACCEL_range();
+    __delay_cycles(1000);
+    ACCEL_initialize();
+    __delay_cycles(1000);
+    ACCEL_readID(&accelID);
+
+    LOG("init: accel hw id: 0x%x\r\n", accelID.x);
+}
+
+
 BOOL ACCEL_initialize_withoutWait() {
 
     // TODO Figure out optimal ADXL configuration for single measurement
