@@ -2,6 +2,8 @@
 
 #include "spi.h"
 
+#include "adxl362.h"
+
 //
 // Commands used for ADXL362 read/write access. Commands are sent prior to data/adx.
 //
