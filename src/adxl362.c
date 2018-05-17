@@ -1,8 +1,12 @@
 #include <msp430.h>
+#include <stdint.h>
+#include <stdbool.h>
 
-#include "spi.h"
+#include <libio/console.h>
 
-#include "adxl362.h"
+#include <libadxl/spi.h>
+#include <libadxl/pins.h>
+#include <libadxl/adxl362.h>
 
 //
 // Commands used for ADXL362 read/write access. Commands are sent prior to data/adx.
@@ -81,6 +85,8 @@ uint8_t const ADXL_CONFIG_FILTER[] = {ADXL_CMD_WRITE_REG,ADXL_REG_FILTER_CTL,0x1
     sizeof(ADXL_CONFIG_RESET),\
     sizeof(ADXL_CONFIG_FILTER))
 
+#define SPI_GP_RXBUF_SIZE 20
+static uint8_t gpRxBuf[SPI_GP_RXBUF_SIZE];
 
 void ACCEL_init()
 {
@@ -112,7 +118,7 @@ void ACCEL_init()
 }
 
 
-BOOL ACCEL_initialize_withoutWait() {
+bool ACCEL_initialize_withoutWait() {
 
     // TODO Figure out optimal ADXL configuration for single measurement
 
@@ -150,7 +156,7 @@ void ACCEL_standby() {
 /**
  * Grab one sample from the ADXL362 accelerometer
  */
-BOOL ACCEL_singleSample(threeAxis_t_8* result) {
+bool ACCEL_singleSample(threeAxis_t_8* result) {
 
 #ifdef SPI_SYNC
     while(!SPI_acquirePort());
@@ -171,7 +177,7 @@ BOOL ACCEL_singleSample(threeAxis_t_8* result) {
     return SUCCESS;
 }
 
-BOOL ACCEL_readStat(threeAxis_t_8* result) {
+bool ACCEL_readStat(threeAxis_t_8* result) {
 
 #ifdef SPI_SYNC
    while(!SPI_acquirePort());
@@ -190,7 +196,7 @@ BOOL ACCEL_readStat(threeAxis_t_8* result) {
     return SUCCESS;
 }
 
-BOOL ACCEL_readID(threeAxis_t_8* result) {
+bool ACCEL_readID(threeAxis_t_8* result) {
 
 #ifdef SPI_SYNC
     while(!SPI_acquirePort());
@@ -213,7 +219,7 @@ BOOL ACCEL_readID(threeAxis_t_8* result) {
  * Turn on and start up the ADXL362 accelerometer. This leaves the ADXL running.
  */
 
-BOOL ACCEL_reset() {
+bool ACCEL_reset() {
 
     // TODO Figure out optimal ADXL configuration for single measurement
 
@@ -242,7 +248,7 @@ BOOL ACCEL_reset() {
     return SUCCESS;
 }
 
-BOOL ACCEL_range() {
+bool ACCEL_range() {
 
     // TODO Figure out optimal ADXL configuration for single measurement
 
@@ -272,7 +278,7 @@ BOOL ACCEL_range() {
 }
 
 
-BOOL ACCEL_initialize() {
+bool ACCEL_initialize() {
 
     // TODO Figure out optimal ADXL configuration for single measurement
 

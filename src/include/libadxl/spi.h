@@ -1,13 +1,20 @@
 #ifndef LIBADXL_SPI_H
 #define LIBADXL_SPI_H
 
-#define SPI_GP_RXBUF_SIZE 20
-extern uint8_t gpRxBuf[SPI_GP_RXBUF_SIZE];
+#include <stdint.h>
+#include <stdbool.h>
 
-BOOL SPI_initialize();
-BOOL SPI_acquirePort();
-BOOL SPI_releasePort();
-BOOL SPI_transaction(uint8_t* rxBuf, uint8_t* txBuf, uint16_t size);
+#define FAIL            (0)
+#define SUCCESS         (1)
+
+#define BITSET(port,pin)    port |= (pin)
+#define BITCLR(port,pin)    port &= ~(pin)
+#define BITTOG(port,pin)    port ^= (pin)
+
+bool SPI_initialize();
+bool SPI_acquirePort();
+bool SPI_releasePort();
+bool SPI_transaction(uint8_t* rxBuf, uint8_t* txBuf, uint16_t size);
 
 #ifdef __MSPGCC__
 #define USCI_UCRXIFG UCRXIFG

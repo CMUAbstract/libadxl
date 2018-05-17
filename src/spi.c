@@ -1,17 +1,18 @@
 #include <msp430.h>
 
-#define SPI_GP_RXBUF_SIZE 20
+#include <stdint.h>
+#include <stdbool.h>
 
-uint8_t gpRxBuf[SPI_GP_RXBUF_SIZE];
+#include <libadxl/spi.h>
 
 /**
  * Description of state of the SPI module.
  */
 static struct {
 #ifdef SPI_SYNC
-    BOOL bPortInUse;
+    bool bPortInUse;
 #endif // SPI_SYNC
-    BOOL bNewDataReceived;
+    bool bNewDataReceived;
     unsigned int uiCurRx;
     unsigned int uiCurTx;
     unsigned int uiBytesToSend;
@@ -26,7 +27,7 @@ static struct {
  *
  * @todo Implement this function
  */
-BOOL SPI_initialize() {
+bool SPI_initialize() {
 
 
     // Hardware peripheral initialization
@@ -39,9 +40,9 @@ BOOL SPI_initialize() {
 
     // State variable initialization
 #ifdef SPI_SYNC
-    spiSM.bPortInUse = FALSE;
+    spiSM.bPortInUse = false;
 #endif // SPI_SYNC
-    spiSM.bNewDataReceived = FALSE;
+    spiSM.bNewDataReceived = false;
     spiSM.uiCurRx = 0;
     spiSM.uiCurTx = 0;
     spiSM.uiBytesToSend = 0;
@@ -55,7 +56,7 @@ BOOL SPI_initialize() {
  *
  * @return Success - you were able to get the port. Fail - you don't have the port, so don't use it.
  */
-BOOL SPI_acquirePort() {
+bool SPI_acquirePort() {
 
     if(spiSM.bPortInUse) {
         return FAIL;
@@ -71,9 +72,9 @@ BOOL SPI_acquirePort() {
  * @return success or fail
  * @todo Make this more robust (don't allow release of port if we don't have it)
  */
-BOOL SPI_releasePort() {
+bool SPI_releasePort() {
     if(spiSM.bPortInUse) {
-        spiSM.bPortInUse = FALSE;
+        spiSM.bPortInUse = false;
         return SUCCESS;
     }
     return FAIL;
@@ -92,7 +93,7 @@ void SPI_waitForRx() {
  * @param size
  * @return success or fail
  */
-BOOL SPI_transaction(uint8_t* rxBuf, uint8_t* txBuf, uint16_t size) {
+bool SPI_transaction(uint8_t* rxBuf, uint8_t* txBuf, uint16_t size) {
 
 #ifdef SPI_SYNC
     if(!spiSM.bPortInUse)
@@ -102,7 +103,7 @@ BOOL SPI_transaction(uint8_t* rxBuf, uint8_t* txBuf, uint16_t size) {
     if(size==0)
         return FAIL; // If we aren't sending anything, fail!
 
-    spiSM.bNewDataReceived = FALSE;
+    spiSM.bNewDataReceived = false;
     spiSM.uiCurRx = 0;
     spiSM.uiCurTx = 0;
     spiSM.uiBytesToSend = size;
@@ -112,10 +113,9 @@ BOOL SPI_transaction(uint8_t* rxBuf, uint8_t* txBuf, uint16_t size) {
 
     //BITSET(UCA1IE, UCTXIE | UCRXIE);
 
-    #pragma clang loop iter_count(MAX_SPI_TX_SIZE)
     for (; spiSM.uiBytesToSend > 0; --spiSM.uiBytesToSend) {
         // Reset receive flag
-        spiSM.bNewDataReceived = FALSE;
+        spiSM.bNewDataReceived = false;
 
         // Start transmission
         UCA1TXBUF = spiSM.pcTxBuffer[spiSM.uiCurTx];
