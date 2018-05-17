@@ -5,6 +5,7 @@ LIB = libadxl
 
 OBJECTS = \
 	adxl362.o \
+	spi.o \
 
 DEPS += \
 	libmsp \
