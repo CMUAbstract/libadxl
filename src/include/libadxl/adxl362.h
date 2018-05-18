@@ -8,12 +8,14 @@ typedef struct {
     uint16_t x;
     uint16_t y;
     uint16_t z;
+    uint16_t padding; // workaround for Clang compiler crash
 } threeAxis_t;
 
 typedef struct {
     uint8_t x;
     uint8_t y;
     uint8_t z;
+    uint8_t padding; // workaround for Clang compiler crash
 } threeAxis_t_8;
 
 void ACCEL_init();
