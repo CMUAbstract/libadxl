@@ -3,7 +3,10 @@
 #include <stdbool.h>
 
 #include <libio/console.h>
+
+#ifdef __clang__
 #include <libmspbuiltins/builtins.h>
+#endif // __clang__
 
 #include <libadxl/spi.h>
 #include <libadxl/pins.h>
