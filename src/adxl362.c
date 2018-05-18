@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #include <libio/console.h>
+#include <libmspbuiltins/builtins.h>
 
 #include <libadxl/spi.h>
 #include <libadxl/pins.h>
